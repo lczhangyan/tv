@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据统计</title>
+</head>
+<style>
+    table{
+        text-align: center;
+        float: left;
+        margin-left: 30px;
+    }
+</style>
+<body>
+昨日访问用户数：{$sn_num}  总访问用户数：{$total_sn}<br/>
+昨日播放时长：{$duration.duration}  总播放时长：{$t_duration}<br/>
+<br/>
+<br/>
+<table>
+    <tr>
+        <td colspan="4">昨日热播排行</td>
+    </tr>
+    <tr>
+        <td>排名</td>
+       <td>资源名称</td>
+        <td>时长</td>
+        <td>来源</td>
+        <td>用户数</td>
+    </tr>
+    {volist name="hotlist" id="vo" key="k"}
+    <tr>
+        <td>{$k}</td>
+        <td>{$vo.resource}</td>
+        <td>{$vo.duration}</td>
+        <td>cntv</td>
+        <td>{$vo.snn}</td>
+    </tr>
+    {/volist}
+</table>
+<table>
+    <tr>
+        <td colspan="4">总热热播排行</td>
+    </tr>
+    <tr>
+        <td>排名</td>
+        <td>资源名称</td>
+        <td>时长</td>
+        <td>来源</td>
+        <td>用户数</td>
+    </tr>
+    {volist name="t_hotlist" id="vo" key="k"}
+    <tr>
+        <td>{$k}</td>
+        <td>{$vo.resource}</td>
+        <td>{$vo.duration}</td>
+        <td>cntv</td>
+        <td>{$vo.snn}</td>
+    </tr>
+    {/volist}
+</table>
+<table>
+    <tr>
+        <td colspan="4">昨日活跃用户</td>
+    </tr>
+    <tr>
+        <td>排名</td>
+        <td>sn</td>
+        <td>时长</td>
+        <td>电影数</td>
+    </tr>
+    {volist name="userlist" id="vo" key="k"}
+    <tr>
+        <td>{$k}</td>
+        <td>{$vo.sn}</td>
+        <td>{$vo.duration}</td>
+        <td>{$vo.resources}</td>
+    </tr>
+    {/volist}
+</table>
+<table>
+    <tr>
+        <td colspan="4">总活跃用户</td>
+    </tr>
+    <tr>
+        <td>排名</td>
+        <td>sn</td>
+        <td>时长</td>
+        <td>电影数</td>
+    </tr>
+    {volist name="t_userlist" id="vo" key="k"}
+        <tr>
+            <td>{$k}</td>
+            <td>{$vo.sn}</td>
+            <td>{$vo.duration}</td>
+            <td>{$vo.resources}</td>
+        </tr>
+    {/volist}
+</table>
+</body>
+</html>

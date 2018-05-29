@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>添加专题</title>
+    <link href="/layui/css/layui.css" rel="stylesheet" type="text/css" />
+    <style>
+        *{
+            box-sizing:border-box;
+        }
+        body{
+            padding: 15px;
+        }
+    </style>
+    <script type="text/javascript" src="/layui/layui.js"></script>
+</head>
+<body>
+<table id="demo" lay-filter="test"></table>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+        var $ = layui.$;
+        var ajaxRequest=function (url,data) {
+            var response;
+            $.ajax({
+                url : url,
+                type: 'POST',
+                data: data,
+                dataType: "json",
+                async : false,
+                success : function(data) {
+                    response = data;
+                },
+                error : function(e) {
+                    console.log(e);
+                }
+            });
+            return response;
+        };
+        //第一个实例
+        table.render({
+            id:'testReload',
+            elem: '#demo'
+            ,height: 500
+            ,url: '/ad/launcher/getList' //数据接口
+            ,page: true //开启分页
+            ,cols: [[ //表头
+                /*{field: 'id', title: 'ID', width:80, sort: true, fixed: 'left'}*/
+                {field: 'r_type', title: '推荐位号', width:120}
+                ,{field: 'recommend_type1', title: '类型', width:110, sort: true}
+                ,{field: 'image_url', title: '图片', width:100,sort: true,templet: '#switchTpl'}
+                ,{field: 'package_name', title: '包名', width:130,sort: true}
+                ,{field: 'class_name', title: '类名', width:130,sort: true}
+                ,{field: 'apk_key', title: '键名', width:150,sort: true}
+                ,{field: 'apk_value', title: '键值', width:150,sort: true}
+                ,{field: 'web_uri', title: '网址', width:150,sort: true}
+                ,{fixed: 'right', title:'操作',width:200, align:'center', toolbar: '#barDemo'}
+            ]]
+        });
+        //监听工具条
+        table.on('tool(test)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if(layEvent === 'detail'){ //查看
+                //do somehing
+                layer.msg("1");
+            } else if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除行么', function(index){
+                    var response = ajaxRequest("/ad/album/del",data);
+                    layer.msg(response.msg);
+                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                    //向服务端发送删除指令
+                });
+            } else if(layEvent === 'edit'){ //编辑
+              layer.open({
+                  type: 2,
+                  title:data.r_type,
+                  area: ['650px', '400px'],
+                  content: '/ad/launcher/getLauncher?id='+data.id,
+                  cancel:function(index, layero){
+                      obj.update();
+                  }
+              });
+
+                //同步更新缓存对应的值
+                obj.update({
+                    username: '123'
+                    ,title: 'xxx'
+                });
+            }
+        });
+    });
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+   <!-- <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+
+    <!-- 这里同样支持 laytpl 语法，如： -->
+    {{#  if(d.auth > 2){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+    {{#  } }}
+</script>
+<script type="text/html" id="switchTpl">
+    <a type="checkbox" href="{{d.image_url}}" target="_blank">查看图片</a>
+</script>
+</body>
+</html>
